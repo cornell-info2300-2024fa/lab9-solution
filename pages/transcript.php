@@ -43,7 +43,16 @@ require "includes/db.php";
 $db = init_sqlite_db("db/site.sqlite", "db/init.sql");
 
 // query grades table
-$result = exec_sql_query($db, "SELECT * FROM grades;");
+$result = exec_sql_query(
+  $db,
+  "SELECT courses.number AS 'courses.number',
+     courses.credits AS 'courses.credits',
+     grades.term AS 'grades.term',
+     grades.acad_year AS 'grades.acad_year',
+     grades.grade AS 'grades.grade'
+   FROM grades INNER JOIN courses ON (grades.course_id = courses.id)
+   ORDER BY term ASC;"
+);
 
 // get records from query
 $records = $result->fetchAll();
@@ -84,11 +93,11 @@ $records = $result->fetchAll();
       <?php
       // write a table row for each record
       foreach ($records as $record) {
-        $course = $record["course_id"];
-        $term = TERMS[$record["term"]];
-        $year = ACADEMIC_YEAR[$record["acad_year"]];
-        $credits = "TODO";
-        $grade = $record["grade"];
+        $course = $record["courses.number"];
+        $term = TERMS[$record["grades.term"]];
+        $year = ACADEMIC_YEAR[$record["grades.acad_year"]];
+        $credits = $record["courses.credits"];
+        $grade = $record["grades.grade"] ?? "";
 
         // row partial
         include "includes/transcript-record.php";

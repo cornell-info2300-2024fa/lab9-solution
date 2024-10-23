@@ -135,7 +135,7 @@ CREATE TABLE "grades" (
   "term" INTEGER NOT NULL,
   "acad_year" INTEGER NOT NULL,
   "grade" TEXT,
-  PRIMARY KEY ("id" AUTOINCREMENT)
+  PRIMARY KEY ("id" AUTOINCREMENT) FOREIGN KEY ("course_id") REFERENCES "courses" ("id")
 );
 
 INSERT INTO
